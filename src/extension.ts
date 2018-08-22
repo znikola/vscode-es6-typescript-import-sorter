@@ -6,24 +6,55 @@ import * as vscode from 'vscode';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  console.log(`sort imports is active!`);
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "imports-sorter" is now active!');
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    return; // No open text editor
+  }
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-        // The code you place here will be executed every time your command is executed
+  vscode.workspace.onDidSaveTextDocument(event => {
+    if (!isTypeScriptFile(event.languageId)) {
+      return;
+    }
 
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
-    });
-
-    context.subscriptions.push(disposable);
+    const imports = getImports(event);
+    console.log(`imports`, imports);
+  });
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
+export function deactivate() {}
+
+/***** extension specifics start here ****/
+
+// regex found here: https://gist.github.com/manekinekko/7e58a17bc62a9be47172
+// TODO: we should checkout this list as well: https://gist.github.com/pilwon/ff55634a29bb4456e0dd
+const ES6_IMPORTS_REG_EX = /(^import(?:["'\s]*(?:[\w*{}\n\r\t, ]+)from\s*)?["'\s].*(?:[@\w\/\_\-]+)["'\s].*;$)/gm;
+
+function isTypeScriptFile(language: string): boolean {
+  return language === 'typescript';
+}
+
+// TODO: to be removed
+// function isTypeScriptFile(document: vscode.TextDocument): boolean {
+//     return vscode.languages.match({ scheme: 'file', language: 'typescript' }, document) > 0;
+// }
+
+function getImports(textDocument: vscode.TextDocument): string[] {
+  const content = textDocument.getText();
+
+  const regExResult = ES6_IMPORTS_REG_EX.exec(content);
+  if (!regExResult) {
+    return [];
+  }
+
+  console.log(`reg ex result\n`, regExResult);
+  let results: string[] = [];
+  for (const [i, res] of regExResult.entries()) {
+    console.log(`result`, i, res);
+    results = [...results, res];
+  }
+
+  return results;
 }
