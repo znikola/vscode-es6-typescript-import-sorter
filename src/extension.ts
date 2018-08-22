@@ -2,6 +2,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { Import } from './models/import';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -41,7 +42,7 @@ function isTypeScriptFile(language: string): boolean {
 //     return vscode.languages.match({ scheme: 'file', language: 'typescript' }, document) > 0;
 // }
 
-function getImports(textDocument: vscode.TextDocument): string[] {
+function getImports(textDocument: vscode.TextDocument): Import[] {
   const content = textDocument.getText();
 
   const regExResult = ES6_IMPORTS_REG_EX.exec(content);
@@ -49,11 +50,10 @@ function getImports(textDocument: vscode.TextDocument): string[] {
     return [];
   }
 
-  console.log(`reg ex result\n`, regExResult);
-  let results: string[] = [];
-  for (const [i, res] of regExResult.entries()) {
-    console.log(`result`, i, res);
-    results = [...results, res];
+  console.log(`reg ex result`, regExResult);
+  let results: Import[] = [];
+  for (const [i, rawImport] of regExResult.entries()) {
+    console.log(`raw imports`, i, rawImport);
   }
 
   return results;
