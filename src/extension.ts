@@ -9,19 +9,20 @@ import { Import } from './models/import';
 export function activate(context: vscode.ExtensionContext) {
   console.log(`sort imports is active!`);
 
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) {
-    return; // No open text editor
-  }
+  const disposable = vscode.commands.registerCommand('extension.sortImports', () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return; // No open text editor
+    }
 
-  vscode.workspace.onDidSaveTextDocument(event => {
-    if (!isTypeScriptFile(event.languageId)) {
+    if (!isTypeScriptFile(editor.document.languageId)) {
       return;
     }
 
-    const imports = getImports(event);
+    const imports = getImports(editor.document);
     console.log(`imports`, imports);
   });
+  context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
