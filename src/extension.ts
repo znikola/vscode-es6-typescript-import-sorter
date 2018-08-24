@@ -43,16 +43,18 @@ function isTypeScriptFile(language: string): boolean {
 
 function getImports(textDocument: vscode.TextDocument): string[] {
   const content = textDocument.getText();
+  if (!content) {
+    return [];
+  }
 
-  const regExResult = ES6_IMPORTS_REG_EX.exec(content);
+  const regExResult = content.match(ES6_IMPORTS_REG_EX);
   if (!regExResult) {
     return [];
   }
 
-  console.log(`reg ex result\n`, regExResult);
   let results: string[] = [];
   for (const [i, res] of regExResult.entries()) {
-    console.log(`result`, i, res);
+    console.log(`result ${i}`, res);
     results = [...results, res];
   }
 
