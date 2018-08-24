@@ -2,8 +2,6 @@
 
 import * as vscode from 'vscode';
 
-// regex found here: https://gist.github.com/manekinekko/7e58a17bc62a9be47172
-// TODO: we should checkout this list as well: https://gist.github.com/pilwon/ff55634a29bb4456e0dd
 const ES6_IMPORTS_REG_EX = /(^import(?:["'\s]*(?:[\w*{}\n\r\t, ]+)from\s*)?["'\s].*(?:[@\w\/\_\-]+)["'\s].*;$)/gm;
 
 export function parse(textDocument: vscode.TextDocument) {
