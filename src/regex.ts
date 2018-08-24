@@ -1,11 +1,12 @@
 'use strict';
 
-import * as vscode from 'vscode';
+import { TextDocument } from 'vscode';
+
 import { Import } from './models/import';
 
 const ES6_IMPORTS_REG_EX = /^import(?:["'\s]*(?:[\w*{}\n\r\t, ]+)from\s*)?["'\s].*(?:[@\w\/\_\-]+)["'\s].*;\ */gm;
 
-export function parse(textDocument: vscode.TextDocument): Import[] {
+export function parse(textDocument: TextDocument): Import[] {
   const content: string = textDocument.getText();
   if (!content) {
     return [];
