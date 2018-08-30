@@ -2,6 +2,8 @@
 
 import * as vscode from 'vscode';
 
+import { groupImports } from './group-imports';
+
 import { parse } from './regex';
 
 // this method is called when your extension is activated
@@ -19,8 +21,12 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    const imports = parse(editor.document);
+    let imports = parse(editor.document);
     console.log(`imports`, imports);
+
+    imports = groupImports(imports);
+
+    console.log('Grouped imports', imports);
   });
   context.subscriptions.push(disposable);
 }
