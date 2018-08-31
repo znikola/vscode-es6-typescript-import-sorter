@@ -1,7 +1,7 @@
-export function validateArray(array: Array<any>): boolean {
+export function validArray(array: Array<any>): boolean {
   return Array.isArray(array) && array.length !== 0;
 }
 
-export function validateString(str: string): boolean {
+export function validString(str: string): boolean {
   return Boolean(str);
 }
