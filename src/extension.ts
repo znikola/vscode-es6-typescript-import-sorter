@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 
 import { parse } from './regex';
+import { fileWriterUtil } from './file-writer';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -21,6 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     const imports = parse(editor.document);
     console.log(`imports`, imports);
+
+    fileWriterUtil(editor.document, imports);
   });
   context.subscriptions.push(disposable);
 }
