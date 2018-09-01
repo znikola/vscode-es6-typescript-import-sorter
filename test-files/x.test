@@ -1,4 +1,6 @@
 import * as fromStore from '../../store';
+import * as fromStore from '../../auth';
+import * as fromStore from '../user';
 import {
   Component,
   OnInit,
@@ -6,6 +8,9 @@ import {
   Input,
   ChangeDetectionStrategy
 } from '@angular/core';
+import {x1} from './util.ts';
 import { filter } from 'rxjs/operators';
+import {x3} from '/user/login/container/register';
+import {x2} from './user/login/component/dialog/login';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
