@@ -1,5 +1,3 @@
-import * as vscode from 'vscode';
-
 import { Import } from './models/import';
 
 export function groupImports(imports: Import[]): Import[] {
@@ -12,10 +10,7 @@ export function groupImports(imports: Import[]): Import[] {
 
     if (last) {
       if (last !== current[0]) {
-        imports[i].startPosition = new vscode.Position(
-          imports[i].startPosition.line + 1,
-          imports[i].startPosition.character
-        );
+        imports[i - 1].statement = imports[i - 1].statement.concat('\n');
       }
     }
     last = current[0];
