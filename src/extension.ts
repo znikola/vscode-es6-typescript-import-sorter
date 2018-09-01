@@ -2,6 +2,8 @@
 
 import * as vscode from 'vscode';
 
+import { groupImports } from './group-imports';
+
 import { parse } from './regex';
 import { fileWriterUtil } from './file-writer';
 
@@ -20,8 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    const imports = parse(editor.document);
+    let imports = parse(editor.document);
     console.log(`imports`, imports);
+
+    imports = groupImports(imports);
+
+    console.log('Grouped imports', imports);
 
     fileWriterUtil(editor.document, imports);
   });
