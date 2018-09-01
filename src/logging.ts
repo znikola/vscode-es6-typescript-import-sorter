@@ -1,5 +1,5 @@
 export function debug(customMessage: string, ...args: any[]): void {
-  if (true) {
+  if (false) {
     console.log(customMessage, ...args);
   }
 }
