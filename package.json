@@ -1,14 +1,25 @@
 {
     "name": "imports-sorter",
-    "displayName": "imports-sorter",
-    "description": "Grouping and sorting of import statements",
+    "displayName": "Imports sorter for ES6 and TypeScript",
+    "description": "Sorting and grouping import statements for ES6 and TypeScript",
     "version": "0.0.1",
     "publisher": "nikolazaric",
     "engines": {
         "vscode": "^1.26.0"
     },
+    "license": "SEE LICENCE IN LICENCE.md",
     "categories": [
-        "Other"
+        "Formatters"
+    ],
+    "keywords": [
+        "imports",
+        "sort imports",
+        "order imports",
+        "group imports",
+        "import statements",
+        "import clauses",
+        "TypeScript",
+        "ES6"
     ],
     "activationEvents": [
         "*"
