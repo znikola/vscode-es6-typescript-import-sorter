@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const grouped = groupImports(sorted);
 
-    console.log('Grouped imports', imports);
+    console.log('Grouped imports', grouped);
   });
   context.subscriptions.push(disposable);
 }
