@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
     console.log(`imports`, imports.map(i => i.from));
     const sorted = sort(imports);
     console.log(`sorted`, sorted.map(i => i.from));
-    const grouped = groupImports(imports);
+    const grouped = groupImports(sorted);
     console.log('Grouped imports', grouped);
     fileWriterUtil(editor.document, grouped);
   });
