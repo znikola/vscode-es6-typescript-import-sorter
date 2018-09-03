@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
       return; // No open text editor
     }
 
-    if (!isTypeScriptFile(editor.document.languageId)) {
+    if (!isLanguageSupported(editor.document.languageId)) {
       return;
     }
 
@@ -30,6 +30,6 @@ export function deactivate() {}
 
 /***** extension specifics start here ****/
 
-function isTypeScriptFile(language: string): boolean {
-  return language === 'typescript';
+function isLanguageSupported(language: string): boolean {
+  return language === 'javascript' || language === 'typescript';
 }
