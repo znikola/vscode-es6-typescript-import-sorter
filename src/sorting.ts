@@ -1,3 +1,5 @@
+'use strict';
+
 import { validArray, validString } from './validation';
 import { Import } from './models/import';
 

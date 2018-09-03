@@ -9,11 +9,8 @@ export function activate(context: vscode.ExtensionContext) {
   console.log(`sort imports is active!`);
 
   const disposable = vscode.commands.registerTextEditorCommand('extension.sortImports', (editor: vscode.TextEditor) => {
+    // No open text editor or the file is not supported
     if (!editor || !isTypeScriptFile(editor.document.languageId)) {
-      return; // No open text editor or the file is not supported
-    }
-
-    if (!isTypeScriptFile(editor.document.languageId)) {
       return;
     }
 

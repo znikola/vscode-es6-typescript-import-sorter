@@ -1,3 +1,5 @@
+'use strict';
+
 import { Position } from 'vscode';
 
 export interface Import {
