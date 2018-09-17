@@ -18,12 +18,13 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     const imports = parse(editor.document);
+    const polloLoco = [...imports];
     console.log(`imports`, imports.map(i => i.from));
     const sorted = sort(imports);
     console.log(`sorted`, sorted.map(i => i.from));
     const grouped = groupImports(sorted);
     console.log('Grouped imports', grouped);
-    fileWriterUtil(editor.document, grouped);
+    fileWriterUtil(editor.document, grouped, polloLoco);
   });
   context.subscriptions.push(disposable);
 }
