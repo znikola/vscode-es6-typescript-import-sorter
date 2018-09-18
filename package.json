@@ -35,6 +35,8 @@
         "theme": "dark"
     },
     "activationEvents": [
+        "onLanguage:javascript",
+        "onLanguage:typescript",
         "onCommand:extension.sortImports"
     ],
     "main": "./out/extension",
