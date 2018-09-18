@@ -1,6 +1,6 @@
 {
-    "name": "imports-sorter",
-    "displayName": "Imports sorter for ES6 and TypeScript",
+    "name": "es6-typescript-import-sorter",
+    "displayName": "ES6 and TypeScript import sorter",
     "description": "Sort and group ES6 and TypeScript import statements",
     "version": "1.0.0-beta.1",
     "publisher": "nikolazaric",
@@ -21,13 +21,13 @@
         "TypeScript",
         "ES6"
     ],
-    "homepage": "https://github.com/znikola/vscode-import-sorter/blob/master/README.md",
+    "homepage": "https://github.com/znikola/vscode-es6-typescript-import-sorter/blob/master/README.md",
     "bugs": {
-        "url": "https://github.com/znikola/vscode-import-sorter/issues"
+        "url": "https://github.com/znikola/vscode-es6-typescript-import-sorter/issues"
     },
     "repository": {      
         "type": "git",
-        "url": "https://github.com/znikola/vscode-import-sorter.git"
+        "url": "https://github.com/znikola/vscode-es6-typescript-import-sorter.git"
     },
     "icon": "images/icon.jpg",
     "galleryBanner": {
