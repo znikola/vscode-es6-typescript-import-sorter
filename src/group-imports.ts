@@ -13,9 +13,21 @@ export function groupImports(imports: Import[]): ImportGroup[] {
   for (let i = 0; i < imports.length; i++) {
     const statement = imports[i].from;
     const current = statement.split('/');
+    let statementGroupingText = '';
+
+    for (let x = 0; x < current.length; x++) {
+      if (current[x] === '..') {
+        statementGroupingText += '/' + current[x];
+      } else if (x === 0) {
+        statementGroupingText += current[x];
+        break;
+      } else {
+        break;
+      }
+    }
 
     if (last) {
-      if (last !== current[0]) {
+      if (last !== statementGroupingText) {
         const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line + 1, 1);
         importGroups.push({ imports: currentImports, blankLinePostion });
         currentImports = [];
@@ -27,7 +39,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
       currentImports.push(imports[i]);
     }
 
-    last = current[0];
+    last = statementGroupingText;
 
     if (i === imports.length - 1) {
       const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line + 1, 1);
