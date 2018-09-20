@@ -19,11 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     const imports = parse(editor.document);
     const importsToDelete = [...imports];
-    console.log(`imports`, imports.map(i => i.from));
     const sorted = sort(imports);
-    console.log(`sorted`, sorted.map(i => i.from));
     const grouped = groupImports(sorted);
-    console.log(`Grouped imports`, grouped);
     fileWriterUtil(editor, grouped, importsToDelete);
   });
   context.subscriptions.push(disposable);
