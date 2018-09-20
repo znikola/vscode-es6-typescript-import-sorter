@@ -28,7 +28,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
 
     if (last) {
       if (last !== statementGroupingText) {
-        const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line + 1, 1);
+        const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line, 1);
         importGroups.push({ imports: currentImports, blankLinePostion });
         currentImports = [];
         currentImports.push(imports[i]);
@@ -42,7 +42,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
     last = statementGroupingText;
 
     if (i === imports.length - 1) {
-      const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line + 1, 1);
+      const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line, 1);
       importGroups.push({ imports: currentImports, blankLinePostion });
     }
   }
