@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const disposable = vscode.commands.registerTextEditorCommand('extension.sortImports', (editor: vscode.TextEditor) => {
     // No open text editor or the file is not supported
-    if (!editor || !isTypeScriptFile(editor.document.languageId)) {
+    if (!editor || !isLanguageSupported(editor.document.languageId)) {
       return;
     }
 
@@ -31,6 +31,6 @@ export function deactivate() {}
 
 /***** extension specifics start here ****/
 
-function isTypeScriptFile(language: string): boolean {
-  return language === 'typescript';
+function isLanguageSupported(language: string): boolean {
+  return language === 'javascript' || language === 'typescript';
 }

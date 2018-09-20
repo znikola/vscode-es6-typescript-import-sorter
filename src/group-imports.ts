@@ -11,15 +11,15 @@ export function groupImports(imports: Import[]): ImportGroup[] {
   let currentImports: Import[] = [];
 
   for (let i = 0; i < imports.length; i++) {
-    const statement = imports[i].from;
-    const current = statement.split('/');
-    let statementGroupingText = '';
+    const importFrom = imports[i].from;
+    const importStatementSections = importFrom.split('/');
+    let statementTitle = '';
 
-    for (let x = 0; x < current.length; x++) {
-      if (current[x] === '..') {
-        statementGroupingText += '/' + current[x];
+    for (let x = 0; x < importStatementSections.length; x++) {
+      if (importStatementSections[x] === '..') {
+        statementTitle += '/' + importStatementSections[x];
       } else if (x === 0) {
-        statementGroupingText += current[x];
+        statementTitle += importStatementSections[x];
         break;
       } else {
         break;
@@ -27,8 +27,8 @@ export function groupImports(imports: Import[]): ImportGroup[] {
     }
 
     if (last) {
-      if (last !== statementGroupingText) {
-        const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line + 1, 1);
+      if (last !== statementTitle) {
+        const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line, 1);
         importGroups.push({ imports: currentImports, blankLinePostion });
         currentImports = [];
         currentImports.push(imports[i]);
@@ -39,10 +39,10 @@ export function groupImports(imports: Import[]): ImportGroup[] {
       currentImports.push(imports[i]);
     }
 
-    last = statementGroupingText;
+    last = statementTitle;
 
     if (i === imports.length - 1) {
-      const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line + 1, 1);
+      const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line, 1);
       importGroups.push({ imports: currentImports, blankLinePostion });
     }
   }

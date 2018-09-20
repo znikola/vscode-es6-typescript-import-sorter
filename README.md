@@ -1,65 +1,27 @@
-# imports-sorter README
+# ES6 and TypeScript import sorter (BETA)
 
-This is the README for your extension "imports-sorter". After writing up a brief description, we recommend including the following sections.
+Easily sort import statements in JavaScript and TypeScript files.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Sort import statements by invoking `VSCode`'s [command pallete](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) and searching for `Sort imports` command.
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+TODO: add GIF demonstration
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+TODO: update before releasing
+
+## Future plans
+
+* Read configuration from `eslint.json` and `tslint.json` file
+* Create an `npm` executable library (useful for CI)
+* Support different ways to invoke the extension (i.e. sort imports on save)
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+See [CHANGELOG.md](https://github.com/znikola/vscode-es6-typescript-import-sorter/blob/master/CHANGELOG.md)
 
-### 1.0.0
+## Contributing
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+See [CONTRIBUTING.md](https://github.com/znikola/vscode-es6-typescript-import-sorter/blob/master/CONTRIBUTING.md)

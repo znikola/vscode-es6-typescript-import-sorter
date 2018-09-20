@@ -1,7 +1,7 @@
 'use strict';
+import { Position } from 'vscode';
 
 import { Import } from './import';
-import { Position } from 'vscode';
 
 export interface ImportGroup {
   imports: Import[];
