@@ -2,6 +2,8 @@
 
 import * as vscode from 'vscode';
 
+import { groupImports } from './group-imports';
+
 import { parse } from './regex';
 import { sort } from './sorting';
 
@@ -18,6 +20,10 @@ export function activate(context: vscode.ExtensionContext) {
     console.log(`imports`, imports.map(i => i.from));
     const sorted = sort(imports);
     console.log(`sorted`, sorted.map(i => i.from));
+
+    const grouped = groupImports(sorted);
+
+    console.log('Grouped imports', grouped);
   });
   context.subscriptions.push(disposable);
 }
