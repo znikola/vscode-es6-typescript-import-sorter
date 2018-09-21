@@ -9,8 +9,6 @@ import { parse } from './regex';
 import { sort } from './sorting';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log(`sort imports is active!`);
-
   const disposable = vscode.commands.registerTextEditorCommand('extension.sortImports', (editor: vscode.TextEditor) => {
     // No open text editor or the file is not supported
     if (!editor || !isLanguageSupported(editor.document.languageId)) {

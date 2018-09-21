@@ -1,9 +1,12 @@
+'use strict';
+
 // Utility file to write the imports to the document
 import * as vscode from 'vscode';
 
 import { ImportGroup } from './models/import-group';
 import { Import } from './models/import';
 import { validArray } from './validation';
+import { isNotLastIteration } from './util';
 
 const NEW_LINE = '\n';
 
@@ -30,7 +33,9 @@ function convertImportsToText(importGroups: ImportGroup[]): string {
 
     for (let newImport of group.imports) {
       importText += newImport.statement;
-      importText += NEW_LINE;
+      if (isNotLastIteration(i, importGroups)) {
+        importText += NEW_LINE;
+      }
     }
   }
 

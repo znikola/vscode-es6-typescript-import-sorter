@@ -1,6 +1,6 @@
 'use strict';
 
-import { TextDocument, Position } from 'vscode';
+import { TextDocument } from 'vscode';
 
 import { validString } from './validation';
 import { Import } from './models/import';
@@ -20,8 +20,8 @@ export function parse(textDocument: TextDocument): Import[] {
 
   let match: RegExpExecArray | null;
   while ((match = ES6_IMPORTS_REGEX.exec(content))) {
-    const startPosition = fixPosition(textDocument.positionAt(match.index));
-    const endPosition = fixPosition(textDocument.positionAt(ES6_IMPORTS_REGEX.lastIndex));
+    const startPosition = textDocument.positionAt(match.index);
+    const endPosition = textDocument.positionAt(ES6_IMPORTS_REGEX.lastIndex);
 
     const newImport: Import = {
       statement: match[0],
@@ -46,8 +46,4 @@ function parseFrom(raw: string): string {
   }
 
   return result[0];
-}
-
-function fixPosition(originalPosition: Position): Position {
-  return new Position(originalPosition.line + 1, originalPosition.character + 1);
 }
