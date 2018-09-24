@@ -16,10 +16,7 @@
         "sort imports",
         "order imports",
         "group imports",
-        "import statements",
-        "import clauses",
-        "TypeScript",
-        "ES6"
+        "TypeScript"
     ],
     "homepage": "https://github.com/znikola/vscode-es6-typescript-import-sorter/blob/master/README.md",
     "bugs": {
