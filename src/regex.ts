@@ -20,11 +20,14 @@ export function parse(textDocument: TextDocument): Import[] {
 
   let match: RegExpExecArray | null;
   while ((match = ES6_IMPORTS_REGEX.exec(content))) {
+    const startPosition = textDocument.positionAt(match.index);
+    const endPosition = textDocument.positionAt(ES6_IMPORTS_REGEX.lastIndex);
+
     const newImport: Import = {
       statement: match[0],
       from: parseFrom(match[1]),
-      startPosition: textDocument.positionAt(match.index),
-      endPosition: textDocument.positionAt(ES6_IMPORTS_REGEX.lastIndex),
+      startPosition,
+      endPosition,
     };
     imports = [...imports, newImport];
   }

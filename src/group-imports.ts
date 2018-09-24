@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 
 import { Import } from './models/import';
 import { ImportGroup } from './models/import-group';
+import { isLastIteration } from './util';
 
 export function groupImports(imports: Import[]): ImportGroup[] {
   let last = '';
@@ -41,7 +42,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
 
     last = statementTitle;
 
-    if (i === imports.length - 1) {
+    if (isLastIteration(i, imports)) {
       const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line, 1);
       importGroups.push({ imports: currentImports, blankLinePostion });
     }

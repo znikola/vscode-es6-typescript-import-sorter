@@ -4,12 +4,11 @@ import * as vscode from 'vscode';
 
 import { groupImports } from './group-imports';
 
+import { fileWriterUtil } from './file-writer';
 import { parse } from './regex';
 import { sort } from './sorting';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log(`sort imports is active!`);
-
   const disposable = vscode.commands.registerTextEditorCommand('extension.sortImports', (editor: vscode.TextEditor) => {
     // No open text editor or the file is not supported
     if (!editor || !isLanguageSupported(editor.document.languageId)) {
@@ -17,13 +16,10 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     const imports = parse(editor.document);
-    console.log(`imports`, imports.map(i => i.from));
+    const importsToDelete = [...imports];
     const sorted = sort(imports);
-    console.log(`sorted`, sorted.map(i => i.from));
-
     const grouped = groupImports(sorted);
-
-    console.log('Grouped imports', grouped);
+    fileWriterUtil(editor, grouped, importsToDelete);
   });
   context.subscriptions.push(disposable);
 }
