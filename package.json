@@ -2,7 +2,7 @@
     "name": "es6-typescript-import-sorter",
     "displayName": "ES6 and TypeScript import sorter",
     "description": "Sort and group ES6 and TypeScript import statements",
-    "version": "1.0.0-beta.1",
+    "version": "1.0.0",
     "publisher": "nikolazaric",
     "engines": {
         "vscode": "^1.20.1"
@@ -16,10 +16,7 @@
         "sort imports",
         "order imports",
         "group imports",
-        "import statements",
-        "import clauses",
-        "TypeScript",
-        "ES6"
+        "TypeScript"
     ],
     "homepage": "https://github.com/znikola/vscode-es6-typescript-import-sorter/blob/master/README.md",
     "bugs": {
