@@ -6,11 +6,11 @@ Easily sort import statements in JavaScript and TypeScript files.
 
 Sort import statements by invoking `VSCode`'s [command pallete](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) and searching for `Sort imports` command.
 
-TODO: add GIF demonstration
+![Example of sorting imports](images/example.gif)
 
 ## Known Issues
 
-TODO: update before releasing
+No know issues.
 
 ## Future plans
 

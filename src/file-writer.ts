@@ -40,5 +40,5 @@ function convertImportsToText(importGroups: ImportGroup[]): string {
 }
 
 function removeLastNewLine(importText: string): string {
-  return importText.slice(0, -2);
+  return importText.slice(0, -1);
 }
