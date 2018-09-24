@@ -6,7 +6,6 @@ import * as vscode from 'vscode';
 import { ImportGroup } from './models/import-group';
 import { Import } from './models/import';
 import { validArray } from './validation';
-import { isNotLastIteration } from './util';
 
 const NEW_LINE = '\n';
 
