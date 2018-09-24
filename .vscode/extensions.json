@@ -1,6 +1,8 @@
 {
 	"recommendations": [
 		"eg2.tslint",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"ms-vsliveshare.vsliveshare",
+    	"ms-vsliveshare.vsliveshare-audio"
 	]
 }
