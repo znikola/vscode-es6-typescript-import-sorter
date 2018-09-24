@@ -33,11 +33,13 @@ function convertImportsToText(importGroups: ImportGroup[]): string {
 
     for (let newImport of group.imports) {
       importText += newImport.statement;
-      if (isNotLastIteration(i, importGroups)) {
-        importText += NEW_LINE;
-      }
+      importText += NEW_LINE;
     }
   }
 
-  return importText;
+  return removeLastNewLine(importText);
+}
+
+function removeLastNewLine(importText: string): string {
+  return importText.slice(0, -2);
 }
