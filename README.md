@@ -10,7 +10,7 @@ Sort import statements by invoking `VSCode`'s [command pallete](https://code.vis
 
 ## Known Issues
 
-No know issues.
+No known issues.
 
 ## Future plans
 
