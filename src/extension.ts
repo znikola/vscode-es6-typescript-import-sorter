@@ -15,13 +15,20 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    const imports = parse(editor.document);
-    const importsToDelete = [...imports];
-    const sorted = sort(imports);
-    const grouped = groupImports(sorted);
-    fileWriterUtil(editor, grouped, importsToDelete);
+    executeActions(editor);
   });
+
+  const onSaveDisposable = vscode.workspace.onWillSaveTextDocument(event => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor || !isLanguageSupported(event.document.languageId)) {
+      return;
+    }
+
+    executeActions(editor);
+  });
+
   context.subscriptions.push(disposable);
+  context.subscriptions.push(onSaveDisposable);
 }
 
 // this method is called when your extension is deactivated
@@ -31,4 +38,12 @@ export function deactivate() {}
 
 function isLanguageSupported(language: string): boolean {
   return language === 'javascript' || language === 'typescript';
+}
+
+function executeActions(editor: vscode.TextEditor) {
+  const imports = parse(editor.document);
+  const importsToDelete = [...imports];
+  const sorted = sort(imports);
+  const grouped = groupImports(sorted);
+  fileWriterUtil(editor, grouped, importsToDelete);
 }
