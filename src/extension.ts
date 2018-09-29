@@ -29,9 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const onTypeScriptSaveDisposable = vscode.languages.registerDocumentFormattingEditProvider(
     { scheme: 'file', language: TYPESCRIPT_LANGUAGE },
-    {
-      provideDocumentFormattingEdits,
-    }
+    { provideDocumentFormattingEdits }
   );
   const onJavaScriptSaveDisposable = vscode.languages.registerDocumentFormattingEditProvider(
     { scheme: 'file', language: JAVASCRIPT_LANGUAGE },
