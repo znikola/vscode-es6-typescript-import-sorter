@@ -9,18 +9,20 @@ import { validArray } from './validation';
 
 const NEW_LINE = '\n';
 
-export function fileWriterUtil(editor: vscode.TextEditor, importGroups: ImportGroup[], oldImports: Import[]): void {
+export function getRange(importGroups: ImportGroup[], oldImports: Import[]): { range: vscode.Range; text: string } {
   if (!validArray(importGroups) || !validArray(oldImports)) {
-    return;
+    return { range: <vscode.Range>{}, text: '' };
   }
 
-  const importText = convertImportsToText(importGroups);
+  const text = convertImportsToText(importGroups);
+
   const startPositionToReplace = oldImports[0].startPosition;
   const endPositionToReplace = oldImports[oldImports.length - 1].endPosition;
 
-  editor.edit((editBuilder: vscode.TextEditorEdit) => {
-    editBuilder.replace(new vscode.Range(startPositionToReplace, endPositionToReplace), importText);
-  });
+  return {
+    range: new vscode.Range(startPositionToReplace, endPositionToReplace),
+    text,
+  };
 }
 
 function convertImportsToText(importGroups: ImportGroup[]): string {
