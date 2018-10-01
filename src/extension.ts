@@ -41,13 +41,6 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(onJavaScriptSaveDisposable);
 }
 
-function provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
-  const { importsToDelete, grouped } = executeActions(document);
-  const { range, text } = getRange(grouped, importsToDelete);
-
-  return [vscode.TextEdit.replace(range, text)];
-}
-
 export function deactivate() {}
 
 /***** extension specifics start here ****/
@@ -63,4 +56,11 @@ function executeActions(document: vscode.TextDocument): { importsToDelete: Impor
   const grouped = groupImports(sorted);
 
   return { importsToDelete, grouped };
+}
+
+function provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
+  const { importsToDelete, grouped } = executeActions(document);
+  const { range, text } = getRange(grouped, importsToDelete);
+
+  return [vscode.TextEdit.replace(range, text)];
 }
