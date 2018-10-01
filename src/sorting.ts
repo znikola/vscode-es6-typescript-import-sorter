@@ -23,16 +23,68 @@ export function sort(imports: Import[]): Import[] {
     return [];
   }
 
-  return imports.sort((i1, i2) => {
+  let { backwardsImports, forwardImports, currentImports, libraries } = filterImports(imports);
+
+  backwardsImports = backwardsImports.sort((i1, i2) => {
+    const first = i1.from;
+    const second = i2.from;
+    return handleBackwardsPath(first, second);
+  });
+
+  forwardImports = forwardImports.sort((i1, i2) => {
+    const first = i1.from;
+    const second = i2.from;
+    return handleForwardPath(first, second);
+  });
+
+  currentImports = currentImports.sort((i1, i2) => {
+    const first = i1.from;
+    const second = i2.from;
+    return handleCurrentPath(first, second);
+  });
+
+  libraries = libraries.sort((i1, i2) => {
     const first = i1.from;
     const second = i2.from;
 
-    if (isLibrary(first) || isLibrary(second)) {
-      return handleLibraries(first, second);
-    }
-
-    return handleLocals(first, second);
+    return handleLibraries(first, second);
   });
+
+  return [...libraries, ...backwardsImports, ...currentImports, ...forwardImports];
+}
+
+function filterImports(
+  imports: Import[]
+): { backwardsImports: Import[]; forwardImports: Import[]; currentImports: Import[]; libraries: Import[] } {
+  let backwardsImports: Import[] = [];
+  let forwardImports: Import[] = [];
+  let currentImports: Import[] = [];
+  let libraries: Import[] = [];
+
+  imports.forEach((anImport: Import) => {
+    let from = anImport.from;
+
+    if (!isLibrary(from)) {
+      from = normalizePath(from);
+
+      if (isCurrentPath(from)) {
+        currentImports.push(anImport);
+      } else if (isForwardPath(from)) {
+        forwardImports.push(anImport);
+      } else if (isBackwardsPath(from)) {
+        backwardsImports.push(anImport);
+      }
+    } else {
+      libraries.push(anImport);
+    }
+  });
+
+  return {
+    backwardsImports,
+    forwardImports,
+    currentImports,
+    libraries,
+  };
 }
 
 function handleLibraries(first: string, second: string): number {
@@ -134,7 +186,7 @@ function sortLibraries(first: string, second: string): number {
   return FIRST_EQUALS_SECOND;
 }
 
-function handleLocals(first: string, second: string): number {
+function handleBackwardsPath(first: string, second: string): number {
   if (!validString(first) || !validString(second)) {
     return INVALID_OR_ERROR;
   }
@@ -142,37 +194,55 @@ function handleLocals(first: string, second: string): number {
   first = normalizePath(first);
   second = normalizePath(second);
 
-  if (isBackwardsPath(first)) {
-    if (isUpwardsPath(second)) {
-      return FIRST_BEFORE_SECOND;
-    }
-    if (isCurrentPath(second)) {
-      return FIRST_AFTER_SECOND;
-    }
-    if (isBackwardsPath(second)) {
-      return handleBothBackwardsPaths(first, second);
-    }
+  if (isForwardPath(second)) {
+    return FIRST_BEFORE_SECOND;
+  }
+  if (isCurrentPath(second)) {
+    return FIRST_AFTER_SECOND;
+  }
+  if (isBackwardsPath(second)) {
+    return handleBothBackwardsPaths(first, second);
   }
 
-  if (isCurrentPath(first)) {
-    if (isBackwardsPath(second)) {
-      return FIRST_AFTER_SECOND;
-    }
-    if (isUpwardsPath(second)) {
-      return FIRST_BEFORE_SECOND;
-    }
-    if (isCurrentPath(second)) {
-      return handleBothCurrentPaths(first, second);
-    }
+  // TODO: this should never happen
+  return INVALID_OR_ERROR;
+}
+
+function handleCurrentPath(first: string, second: string): number {
+  if (!validString(first) || !validString(second)) {
+    return INVALID_OR_ERROR;
   }
 
-  if (isUpwardsPath(first)) {
-    if (isBackwardsPath(second) || isCurrentPath(second)) {
-      return FIRST_AFTER_SECOND;
-    }
-    if (isUpwardsPath(second)) {
-      return handleBothUpwardsPaths(first, second);
-    }
+  first = normalizePath(first);
+  second = normalizePath(second);
+
+  if (isBackwardsPath(second)) {
+    return FIRST_AFTER_SECOND;
+  }
+  if (isForwardPath(second)) {
+    return FIRST_BEFORE_SECOND;
+  }
+  if (isCurrentPath(second)) {
+    return handleBothCurrentPaths(first, second);
+  }
+
+  // TODO: this should never happen
+  return INVALID_OR_ERROR;
+}
+
+function handleForwardPath(first: string, second: string): number {
+  if (!validString(first) || !validString(second)) {
+    return INVALID_OR_ERROR;
+  }
+
+  first = normalizePath(first);
+  second = normalizePath(second);
+
+  if (isBackwardsPath(second) || isCurrentPath(second)) {
+    return FIRST_AFTER_SECOND;
+  }
+  if (isForwardPath(second)) {
+    return handleBothForwardPaths(first, second);
   }
 
   // TODO: this should never happen
@@ -198,7 +268,7 @@ function isBackwardsPath(statement: string): boolean {
   return statement.startsWith(FOLDER_PATH);
 }
 
-function isUpwardsPath(statement: string): boolean {
+function isForwardPath(statement: string): boolean {
   if (!validString) {
     return false;
   }
@@ -211,7 +281,7 @@ function isCurrentPath(statement: string): boolean {
     return false;
   }
 
-  return determineUpwardsHierarchyLevel(statement) === 0;
+  return determineForwardHierarchyLevel(statement) === 0;
 }
 
 // TODO convert first to lowercase, so that we have a case-insensitive sorting?
@@ -273,13 +343,13 @@ function handleBothCurrentPaths(first: string, second: string): number {
   return sortAlphabetically(first, second);
 }
 
-function handleBothUpwardsPaths(first: string, second: string): number {
+function handleBothForwardPaths(first: string, second: string): number {
   if (!validString(first) || !validString(second)) {
     return INVALID_OR_ERROR;
   }
 
-  const levelFirst = determineUpwardsHierarchyLevel(first);
-  const levelSecond = determineUpwardsHierarchyLevel(second);
+  const levelFirst = determineForwardHierarchyLevel(first);
+  const levelSecond = determineForwardHierarchyLevel(second);
 
   if (levelFirst === levelSecond) {
     return sortAlphabetically(first, second);
@@ -292,7 +362,7 @@ function handleBothUpwardsPaths(first: string, second: string): number {
   return FIRST_AFTER_SECOND;
 }
 
-function determineUpwardsHierarchyLevel(statement: string): number {
+function determineForwardHierarchyLevel(statement: string): number {
   if (!validString(statement)) {
     return -1;
   }
