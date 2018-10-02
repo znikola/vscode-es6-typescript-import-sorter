@@ -1,51 +1,84 @@
 'use strict';
 
-import * as vscode from 'vscode';
-
 import { Import } from './models/import';
 import { ImportGroup } from './models/import-group';
-import { isLastIteration } from './util';
+import { isLibrary, isBackwardsPath, normalizePath, isCurrentPath } from './util';
+
+enum Directions {
+  LIBRARY,
+  BACK,
+  CURRENT,
+  FORWARD,
+}
+
+interface PreviousElement {
+  from: string;
+  direction: Directions | null;
+}
 
 export function groupImports(imports: Import[]): ImportGroup[] {
-  let last = '';
   const importGroups: ImportGroup[] = [];
   let currentImports: Import[] = [];
+  let lastElement: PreviousElement = { from: '', direction: null };
+  let lastStepCount = -1;
+  imports.forEach((element, index) => {
+    let from = element.from;
 
-  for (let i = 0; i < imports.length; i++) {
-    const importFrom = imports[i].from;
-    const importStatementSections = importFrom.split('/');
-    let statementTitle = '';
-
-    for (let x = 0; x < importStatementSections.length; x++) {
-      if (importStatementSections[x] === '..') {
-        statementTitle += '/' + importStatementSections[x];
-      } else if (x === 0) {
-        statementTitle += importStatementSections[x];
-        break;
+    if (isLibrary(from)) {
+      if (getRootFrom(lastElement.from) === getRootFrom(from) || lastElement.direction === null) {
+        currentImports.push(element);
       } else {
-        break;
-      }
-    }
-
-    if (last) {
-      if (last !== statementTitle) {
-        const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line, 1);
-        importGroups.push({ imports: currentImports, blankLinePostion });
+        importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
         currentImports = [];
-        currentImports.push(imports[i]);
-      } else {
-        currentImports.push(imports[i]);
+        currentImports.push(element);
       }
+      lastElement = { from: element.from, direction: Directions.LIBRARY };
     } else {
-      currentImports.push(imports[i]);
+      from = normalizePath(from);
+
+      if (isBackwardsPath(from)) {
+        if (lastStepCount === getBackwardsStepCount(from)) {
+          currentImports.push(element);
+        } else {
+          importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
+          currentImports = [];
+          currentImports.push(element);
+        }
+        lastStepCount = getBackwardsStepCount(from);
+        lastElement = { from, direction: Directions.BACK };
+      } else if (isCurrentPath(from)) {
+        if (lastElement.direction !== Directions.CURRENT) {
+          importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
+          currentImports = [];
+          currentImports.push(element);
+        } else {
+          currentImports.push(element);
+        }
+        lastElement = { from, direction: Directions.CURRENT };
+      } else {
+        if (lastElement.direction !== Directions.FORWARD) {
+          importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
+          currentImports = [];
+          currentImports.push(element);
+        } else {
+          currentImports.push(element);
+        }
+        lastElement = { from, direction: Directions.FORWARD };
+      }
     }
 
-    last = statementTitle;
-
-    if (isLastIteration(i, imports)) {
-      const blankLinePostion = new vscode.Position(currentImports[currentImports.length - 1].endPosition.line, 1);
-      importGroups.push({ imports: currentImports, blankLinePostion });
+    if (index === imports.length - 1) {
+      importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
     }
-  }
+  });
+
   return importGroups;
+}
+
+function getRootFrom(from: string): string {
+  return from.split('/')[0];
+}
+
+function getBackwardsStepCount(from: string): number {
+  return from.split('../').length;
 }
