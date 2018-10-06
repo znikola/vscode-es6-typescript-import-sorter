@@ -1,22 +1,27 @@
 'use strict';
 
 import { validString } from './validation';
+import { Type } from './models/import';
 
-const FOLDER_PATH = '../';
+export const FOLDER_PATH = '../';
+
 const PATH_SEPARATOR_REGEX = /\//g;
 
 export function isLastIteration<T>(i: number, anArray: Array<T>): boolean {
   return i === anArray.length - 1;
 }
 
-export function isLibrary(statement: string): boolean {
-  if (!validString(statement)) {
+export function isLibrary(from: string): boolean {
+  if (!validString(from)) {
     return false;
   }
 
-  return startsWithAT(statement) || !isRelativePath(statement);
+  return startsWithAT(from) || !isRelativePath(from);
 }
 
+// TODO: maybe there's no need for some functions to be here?
+
+// TODO: is it 'statement' or 'from'?
 export function normalizePath(statement: string): string {
   if (!validString(statement)) {
     return statement;
@@ -28,20 +33,28 @@ export function normalizePath(statement: string): string {
   return statement;
 }
 
-export function isBackwardsPath(statement: string): boolean {
-  if (!validString(statement)) {
+export function isBackwardsPath(from: string): boolean {
+  if (!validString(from)) {
     return false;
   }
 
-  return statement.startsWith(FOLDER_PATH);
+  return from.startsWith(FOLDER_PATH);
 }
 
-export function isCurrentPath(statement: string): boolean {
-  if (!validString(statement)) {
+export function isForwardPath(statement: string): boolean {
+  if (!validString) {
     return false;
   }
 
-  return determineForwardHierarchyLevel(statement) === 0;
+  return !isBackwardsPath(statement) && !isCurrentPath(statement);
+}
+
+export function isCurrentPath(from: string): boolean {
+  if (!validString(from)) {
+    return false;
+  }
+
+  return determineForwardHierarchyLevel(from) === 0;
 }
 
 export function determineForwardHierarchyLevel(statement: string): number {
@@ -57,26 +70,48 @@ export function determineForwardHierarchyLevel(statement: string): number {
   return 0;
 }
 
-export function startsWithAT(statement: string): boolean {
-  if (!validString(statement)) {
+export function startsWithAT(from: string): boolean {
+  if (!validString(from)) {
     return false;
   }
 
-  return isFirstCharacter(statement, '@');
+  return isFirstCharacter(from, '@');
 }
 
-function isRelativePath(statement: string): boolean {
-  if (!validString(statement)) {
-    return false;
+export function determineType(_from: string): Type {
+  let from = _from;
+  if (isLibrary(from)) {
+    return Type.LIBRARY;
   }
 
-  return isFirstCharacter(statement, '.') || isFirstCharacter(statement, '/');
+  from = normalizePath(from);
+
+  if (isCurrentPath(from)) {
+    return Type.CURRENT;
+  }
+  if (isForwardPath(from)) {
+    return Type.FORWARD;
+  }
+  if (isBackwardsPath(from)) {
+    return Type.BACKWARDS;
+  }
+
+  // TODO: error handling
+  throw new Error(`From not recognized: ${from}`);
 }
 
-function isFirstCharacter(statement: string, char: string): boolean {
-  if (!validString(statement) || !validString(char)) {
+function isRelativePath(from: string): boolean {
+  if (!validString(from)) {
     return false;
   }
 
-  return statement.charAt(0) === char;
+  return isFirstCharacter(from, '.') || isFirstCharacter(from, '/');
+}
+
+function isFirstCharacter(str: string, char: string): boolean {
+  if (!validString(str) || !validString(char)) {
+    return false;
+  }
+
+  return str.charAt(0) === char;
 }

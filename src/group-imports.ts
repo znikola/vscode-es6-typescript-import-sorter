@@ -1,26 +1,15 @@
 'use strict';
 
-import { Import } from './models/import';
+import { Import, Type } from './models/import';
 import { ImportGroup } from './models/import-group';
-import { isLibrary, isBackwardsPath, normalizePath, isCurrentPath, isLastIteration } from './util';
-
-enum Type {
-  LIBRARY,
-  BACKWARDS,
-  CURRENT,
-  FORWARD,
-}
-
-interface PreviousElement {
-  from: string;
-  type: Type | null;
-}
+import { isLastIteration } from './util';
 
 interface PreviousAndCurrentImport {
-  lastElement: PreviousElement;
-  element: Import;
+  previous: Import;
+  current: Import;
 }
 
+// TODO: add 's' at the end
 interface ImportGroupAndCurrentImport {
   importGroups: ImportGroup[];
   currentImports: Import[];
@@ -30,46 +19,27 @@ export function groupImports(imports: Import[]): ImportGroup[] {
   let importGroups: ImportGroup[] = [];
   let currentImports: Import[] = [];
 
-  let lastElement: PreviousElement = { from: '', type: null };
+  let previous: Import = <Import>{ from: '' };
 
-  imports.forEach((element, index) => {
-    let from = element.from;
-
-    if (isLibrary(from)) {
-      ({ lastElement, importGroups, currentImports } = handleLibraries(
-        { lastElement, element },
+  imports.forEach((current: Import, index: number) => {
+    const type = current.type;
+    if (type === Type.LIBRARY) {
+      ({ previous, importGroups, currentImports } = handleLibraries(
+        { previous, current },
         { importGroups, currentImports },
-        from
+        current.from
       ));
     } else {
-      from = normalizePath(from);
-
-      if (isBackwardsPath(from)) {
-        ({ lastElement, importGroups, currentImports } = handleRelativeImports(
-          { lastElement, element },
-          { importGroups, currentImports },
-          Type.BACKWARDS,
-          from
-        ));
-      } else if (isCurrentPath(from)) {
-        ({ lastElement, importGroups, currentImports } = handleRelativeImports(
-          { lastElement, element },
-          { importGroups, currentImports },
-          Type.CURRENT,
-          from
-        ));
-      } else {
-        ({ lastElement, importGroups, currentImports } = handleRelativeImports(
-          { lastElement, element },
-          { importGroups, currentImports },
-          Type.FORWARD,
-          from
-        ));
-      }
+      ({ previous, importGroups, currentImports } = handleRelativeImports(
+        { previous, current },
+        { importGroups, currentImports },
+        type,
+        current.from
+      ));
     }
 
     if (isLastIteration(index, imports)) {
-      importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
+      importGroups.push({ imports: currentImports, blankLinePostion: current.endPosition });
     }
   });
 
@@ -80,22 +50,23 @@ function handleLibraries(
   previousAndCurrentImport: PreviousAndCurrentImport,
   imports: ImportGroupAndCurrentImport,
   from: string
-): { lastElement: PreviousElement; importGroups: ImportGroup[]; currentImports: Import[] } {
+  // TODO: return PreviousAndCurrentImport and ImportGroupAndCurrentImport
+): { previous: Import; importGroups: ImportGroup[]; currentImports: Import[] } {
   if (
-    getRootFrom(previousAndCurrentImport.lastElement.from) === getRootFrom(from) ||
-    previousAndCurrentImport.lastElement.type === null
+    getRootFrom(previousAndCurrentImport.previous.from) === getRootFrom(from) ||
+    previousAndCurrentImport.previous.type === null
   ) {
-    imports.currentImports.push(previousAndCurrentImport.element);
+    imports.currentImports.push(previousAndCurrentImport.current);
   } else {
     imports.importGroups.push({
       imports: imports.currentImports,
-      blankLinePostion: previousAndCurrentImport.element.endPosition,
+      blankLinePostion: previousAndCurrentImport.current.endPosition,
     });
     imports.currentImports = [];
-    imports.currentImports.push(previousAndCurrentImport.element);
+    imports.currentImports.push(previousAndCurrentImport.current);
   }
   return {
-    lastElement: { from, type: Type.LIBRARY },
+    previous: <Import>{ from, type: Type.LIBRARY },
     importGroups: imports.importGroups,
     currentImports: imports.currentImports,
   };
@@ -106,19 +77,20 @@ function handleRelativeImports(
   imports: ImportGroupAndCurrentImport,
   type: Type,
   from: string
-): { lastElement: PreviousElement; importGroups: ImportGroup[]; currentImports: Import[] } {
-  if (previousAndCurrentImport.lastElement.type !== type) {
+  // TODO: return PreviousAndCurrentImport and ImportGroupAndCurrentImport
+): { previous: Import; importGroups: ImportGroup[]; currentImports: Import[] } {
+  if (previousAndCurrentImport.previous.type !== type) {
     imports.importGroups.push({
       imports: imports.currentImports,
-      blankLinePostion: previousAndCurrentImport.element.endPosition,
+      blankLinePostion: previousAndCurrentImport.current.endPosition,
     });
     imports.currentImports = [];
-    imports.currentImports.push(previousAndCurrentImport.element);
+    imports.currentImports.push(previousAndCurrentImport.current);
   } else {
-    imports.currentImports.push(previousAndCurrentImport.element);
+    imports.currentImports.push(previousAndCurrentImport.current);
   }
   return {
-    lastElement: { from, type },
+    previous: <Import>{ from, type },
     importGroups: imports.importGroups,
     currentImports: imports.currentImports,
   };

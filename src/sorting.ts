@@ -1,7 +1,7 @@
 'use strict';
 
 import { validArray, validString } from './validation';
-import { Import } from './models/import';
+import { Import, Type } from './models/import';
 import {
   determineForwardHierarchyLevel,
   normalizePath,
@@ -9,6 +9,8 @@ import {
   isCurrentPath,
   startsWithAT,
   isLibrary,
+  isForwardPath,
+  FOLDER_PATH,
 } from './util';
 
 /** used for Array.sort */
@@ -20,7 +22,6 @@ const FIRST_EQUALS_SECOND = 0;
 /** this has the same value as FIRST_EQUALS_SECOND, but it brings more semantic when reading the algorithm */
 const INVALID_OR_ERROR = 0;
 
-const FOLDER_PATH = '../';
 const FOLDER_PATH_REGEX = new RegExp(FOLDER_PATH, 'g');
 
 export function sort(imports: Import[]): Import[] {
@@ -67,20 +68,18 @@ function filterImports(
   let libraries: Import[] = [];
 
   imports.forEach((anImport: Import) => {
-    let from = anImport.from;
+    const type = anImport.type;
 
-    if (!isLibrary(from)) {
-      from = normalizePath(from);
-
-      if (isCurrentPath(from)) {
+    if (type === Type.LIBRARY) {
+      libraries.push(anImport);
+    } else {
+      if (type === Type.CURRENT) {
         currentImports.push(anImport);
-      } else if (isForwardPath(from)) {
+      } else if (type === Type.FORWARD) {
         forwardImports.push(anImport);
-      } else if (isBackwardsPath(from)) {
+      } else if (type === Type.BACKWARDS) {
         backwardsImports.push(anImport);
       }
-    } else {
-      libraries.push(anImport);
     }
   });
 
@@ -177,7 +176,7 @@ function handleBackwardsPath(first: string, second: string): number {
     return handleBothBackwardsPaths(first, second);
   }
 
-  // TODO: this should never happen
+  // TODO: error handling
   return INVALID_OR_ERROR;
 }
 
@@ -199,7 +198,7 @@ function handleCurrentPath(first: string, second: string): number {
     return handleBothCurrentPaths(first, second);
   }
 
-  // TODO: this should never happen
+  // TODO: error handling
   return INVALID_OR_ERROR;
 }
 
@@ -218,7 +217,7 @@ function handleForwardPath(first: string, second: string): number {
     return handleBothForwardPaths(first, second);
   }
 
-  // TODO: this should never happen
+  // TODO: error handling
   return INVALID_OR_ERROR;
 }
 
@@ -298,12 +297,4 @@ function handleBothForwardPaths(first: string, second: string): number {
   }
 
   return FIRST_AFTER_SECOND;
-}
-
-function isForwardPath(statement: string): boolean {
-  if (!validString) {
-    return false;
-  }
-
-  return !isBackwardsPath(statement) && !isCurrentPath(statement);
 }
