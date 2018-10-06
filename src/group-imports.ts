@@ -26,15 +26,13 @@ export function groupImports(imports: Import[]): ImportGroup[] {
     if (type === Type.LIBRARY) {
       ({ previous, importGroups, currentImports } = handleLibraries(
         { previous, current },
-        { importGroups, currentImports },
-        current.from
+        { importGroups, currentImports }
       ));
     } else {
       ({ previous, importGroups, currentImports } = handleRelativeImports(
         { previous, current },
         { importGroups, currentImports },
-        type,
-        current.from
+        type
       ));
     }
 
@@ -48,10 +46,11 @@ export function groupImports(imports: Import[]): ImportGroup[] {
 
 function handleLibraries(
   previousAndCurrentImport: PreviousAndCurrentImport,
-  imports: ImportGroupAndCurrentImport,
-  from: string
+  imports: ImportGroupAndCurrentImport
   // TODO: return PreviousAndCurrentImport and ImportGroupAndCurrentImport
 ): { previous: Import; importGroups: ImportGroup[]; currentImports: Import[] } {
+  const from = previousAndCurrentImport.current.from;
+
   if (
     getRootFrom(previousAndCurrentImport.previous.from) === getRootFrom(from) ||
     previousAndCurrentImport.previous.type === null
@@ -75,8 +74,7 @@ function handleLibraries(
 function handleRelativeImports(
   previousAndCurrentImport: PreviousAndCurrentImport,
   imports: ImportGroupAndCurrentImport,
-  type: Type,
-  from: string
+  type: Type
   // TODO: return PreviousAndCurrentImport and ImportGroupAndCurrentImport
 ): { previous: Import; importGroups: ImportGroup[]; currentImports: Import[] } {
   if (previousAndCurrentImport.previous.type !== type) {
@@ -90,7 +88,7 @@ function handleRelativeImports(
     imports.currentImports.push(previousAndCurrentImport.current);
   }
   return {
-    previous: <Import>{ from, type },
+    previous: <Import>{ from: previousAndCurrentImport.current.from, type },
     importGroups: imports.importGroups,
     currentImports: imports.currentImports,
   };
