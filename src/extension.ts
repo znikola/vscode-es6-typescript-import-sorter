@@ -2,13 +2,12 @@
 
 import * as vscode from 'vscode';
 
-import { groupImports } from './group-imports';
-
-import { getRange } from './file-writer';
-import { parse } from './regex';
-import { sort } from './sorting';
-import { ImportGroup } from './models/import-group';
+import { getRange } from './core/file-writer';
+import { groupImports } from './core/group-imports';
+import { parse } from './core/regex';
+import { sort } from './core/sorting';
 import { Import } from './models/import';
+import { ImportGroup } from './models/import-group';
 
 const TYPESCRIPT_LANGUAGE = 'typescript';
 const JAVASCRIPT_LANGUAGE = 'javascript';

@@ -1,8 +1,9 @@
 {
 	"recommendations": [
+		"nikolazaric.es6-typescript-import-sorter",
 		"eg2.tslint",
 		"esbenp.prettier-vscode",
 		"ms-vsliveshare.vsliveshare",
-    	"ms-vsliveshare.vsliveshare-audio"
+    "ms-vsliveshare.vsliveshare-audio"
 	]
 }

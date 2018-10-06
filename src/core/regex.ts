@@ -2,8 +2,9 @@
 
 import { TextDocument } from 'vscode';
 
-import { validString } from './validation';
-import { Import } from './models/import';
+import { Import } from '../models/import';
+import { determineType } from '../utils/import-util';
+import { validString } from '../utils/validation';
 
 const ES6_IMPORTS_REGEX = /^import(?:["'\s]*(?:[\w*{}\n\r\t, ]+)from\s*)?(["'\s].*(?:[@\w\/\_\-.]+)["'\s]).*;\ */gm;
 // extracted from ES6_IMPORTS_REGEX. Because of how JavaScript's regex engine is implemented (https://stackoverflow.com/a/27131524/5252849), we have to extract it separatley.
@@ -23,9 +24,11 @@ export function parse(textDocument: TextDocument): Import[] {
     const startPosition = textDocument.positionAt(match.index);
     const endPosition = textDocument.positionAt(ES6_IMPORTS_REGEX.lastIndex);
 
+    const from = parseFrom(match[1]);
     const newImport: Import = {
       statement: match[0],
-      from: parseFrom(match[1]),
+      from,
+      type: determineType(from),
       startPosition,
       endPosition,
     };

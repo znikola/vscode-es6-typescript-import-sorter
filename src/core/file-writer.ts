@@ -3,9 +3,9 @@
 // Utility file to write the imports to the document
 import * as vscode from 'vscode';
 
-import { ImportGroup } from './models/import-group';
-import { Import } from './models/import';
-import { validArray } from './validation';
+import { Import } from '../models/import';
+import { ImportGroup } from '../models/import-group';
+import { validArray } from '../utils/validation';
 
 const NEW_LINE = '\n';
 

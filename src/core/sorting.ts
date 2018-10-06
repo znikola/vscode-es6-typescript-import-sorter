@@ -1,7 +1,17 @@
 'use strict';
 
-import { validArray, validString } from './validation';
-import { Import } from './models/import';
+import { Import, Type } from '../models/import';
+import {
+  determineForwardHierarchyLevel,
+  normalizePath,
+  isBackwardsPath,
+  isCurrentPath,
+  startsWithAT,
+  isLibrary,
+  isForwardPath,
+  FOLDER_PATH,
+} from '../utils/import-util';
+import { validArray, validString } from '../utils/validation';
 
 /** used for Array.sort */
 const FIRST_AFTER_SECOND = 1;
@@ -12,11 +22,7 @@ const FIRST_EQUALS_SECOND = 0;
 /** this has the same value as FIRST_EQUALS_SECOND, but it brings more semantic when reading the algorithm */
 const INVALID_OR_ERROR = 0;
 
-const FOLDER_PATH = '../';
 const FOLDER_PATH_REGEX = new RegExp(FOLDER_PATH, 'g');
-
-// the regex is matching '/'
-const PATH_SEPARATOR_REGEX = /\//g;
 
 export function sort(imports: Import[]): Import[] {
   if (!validArray(imports)) {
@@ -62,20 +68,18 @@ function filterImports(
   let libraries: Import[] = [];
 
   imports.forEach((anImport: Import) => {
-    let from = anImport.from;
+    const type = anImport.type;
 
-    if (!isLibrary(from)) {
-      from = normalizePath(from);
-
-      if (isCurrentPath(from)) {
+    if (type === Type.LIBRARY) {
+      libraries.push(anImport);
+    } else {
+      if (type === Type.CURRENT) {
         currentImports.push(anImport);
-      } else if (isForwardPath(from)) {
+      } else if (type === Type.FORWARD) {
         forwardImports.push(anImport);
-      } else if (isBackwardsPath(from)) {
+      } else if (type === Type.BACKWARDS) {
         backwardsImports.push(anImport);
       }
-    } else {
-      libraries.push(anImport);
     }
   });
 
@@ -138,38 +142,6 @@ function sortAT(first: string, second: string): number {
   return FIRST_EQUALS_SECOND;
 }
 
-function startsWithAT(statement: string): boolean {
-  if (!validString(statement)) {
-    return false;
-  }
-
-  return isFirstCharacter(statement, '@');
-}
-
-function isRelativePath(statement: string): boolean {
-  if (!validString(statement)) {
-    return false;
-  }
-
-  return isFirstCharacter(statement, '.') || isFirstCharacter(statement, '/');
-}
-
-function isFirstCharacter(statement: string, char: string): boolean {
-  if (!validString(statement) || !validString(char)) {
-    return false;
-  }
-
-  return statement.charAt(0) === char;
-}
-
-function isLibrary(statement: string): boolean {
-  if (!validString(statement)) {
-    return false;
-  }
-
-  return startsWithAT(statement) || !isRelativePath(statement);
-}
-
 function sortLibraries(first: string, second: string): number {
   if (!validString(first) || !validString(second)) {
     return INVALID_OR_ERROR;
@@ -204,7 +176,7 @@ function handleBackwardsPath(first: string, second: string): number {
     return handleBothBackwardsPaths(first, second);
   }
 
-  // TODO: this should never happen
+  // TODO: error handling
   return INVALID_OR_ERROR;
 }
 
@@ -226,7 +198,7 @@ function handleCurrentPath(first: string, second: string): number {
     return handleBothCurrentPaths(first, second);
   }
 
-  // TODO: this should never happen
+  // TODO: error handling
   return INVALID_OR_ERROR;
 }
 
@@ -245,43 +217,8 @@ function handleForwardPath(first: string, second: string): number {
     return handleBothForwardPaths(first, second);
   }
 
-  // TODO: this should never happen
+  // TODO: error handling
   return INVALID_OR_ERROR;
-}
-
-function normalizePath(statement: string): string {
-  if (!validString(statement)) {
-    return statement;
-  }
-
-  if (isFirstCharacter(statement, '.') && statement.charAt(1) === '/') {
-    return statement.slice(2);
-  }
-  return statement;
-}
-
-function isBackwardsPath(statement: string): boolean {
-  if (!validString(statement)) {
-    return false;
-  }
-
-  return statement.startsWith(FOLDER_PATH);
-}
-
-function isForwardPath(statement: string): boolean {
-  if (!validString) {
-    return false;
-  }
-
-  return !isBackwardsPath(statement) && !isCurrentPath(statement);
-}
-
-function isCurrentPath(statement: string): boolean {
-  if (!validString(statement)) {
-    return false;
-  }
-
-  return determineForwardHierarchyLevel(statement) === 0;
 }
 
 // TODO convert first to lowercase, so that we have a case-insensitive sorting?
@@ -360,17 +297,4 @@ function handleBothForwardPaths(first: string, second: string): number {
   }
 
   return FIRST_AFTER_SECOND;
-}
-
-function determineForwardHierarchyLevel(statement: string): number {
-  if (!validString(statement)) {
-    return -1;
-  }
-
-  const match = statement.match(PATH_SEPARATOR_REGEX);
-  if (match) {
-    return match.length;
-  }
-
-  return 0;
 }
