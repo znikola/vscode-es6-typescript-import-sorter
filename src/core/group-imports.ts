@@ -18,7 +18,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
   let importGroups: ImportGroup[] = [];
   let currentImports: Import[] = [];
 
-  let previous: Import = <Import>{ from: '' };
+  let previous: Import = <Import>{ from: '', type: null };
 
   imports.forEach((current: Import, index: number) => {
     const type = current.type;
@@ -31,7 +31,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
       ({ previous, importGroups, currentImports } = handleRelativeImports(
         { previous, current },
         { importGroups, currentImports },
-        type
+        <Type>type
       ));
     }
 

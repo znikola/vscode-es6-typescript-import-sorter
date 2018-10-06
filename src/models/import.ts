@@ -5,13 +5,13 @@ import { Position } from 'vscode';
 export interface Import {
   statement: string;
   from: string;
-  type: Type;
+  type: Type | null;
   startPosition: Position;
   endPosition: Position;
 }
 
 export enum Type {
-  LIBRARY,
+  LIBRARY = 1,
   BACKWARDS,
   CURRENT,
   FORWARD,
