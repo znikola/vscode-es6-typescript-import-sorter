@@ -6,7 +6,7 @@ import { isLibrary, isBackwardsPath, normalizePath, isCurrentPath } from './util
 
 enum Directions {
   LIBRARY,
-  BACK,
+  BACKWARDS,
   CURRENT,
   FORWARD,
 }
@@ -48,7 +48,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
         ({ lastElement, importGroups, currentImports } = handleRelativeImports(
           { lastElement, element },
           { importGroups, currentImports },
-          Directions.BACK,
+          Directions.BACKWARDS,
           from
         ));
       } else if (isCurrentPath(from)) {
@@ -68,7 +68,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
       }
     }
 
-    if (index === imports.length - 1) {
+    if (isLastIteration(index, imports.length)) {
       importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
     }
   });
@@ -126,4 +126,8 @@ function handleRelativeImports(
 
 function getRootFrom(from: string): string {
   return from.split('/')[0];
+}
+
+function isLastIteration(index: number, length: number): boolean {
+  return index === length - 1;
 }
