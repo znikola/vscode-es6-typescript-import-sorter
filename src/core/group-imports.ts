@@ -1,16 +1,15 @@
 'use strict';
 
-import { Import, Type } from './models/import';
-import { ImportGroup } from './models/import-group';
-import { isLastIteration } from './util';
+import { Import, Type } from '../models/import';
+import { ImportGroup } from '../models/import-group';
+import { isLastIteration } from '../utils/util';
 
 interface PreviousAndCurrentImport {
   previous: Import;
   current: Import;
 }
 
-// TODO: add 's' at the end
-interface ImportGroupAndCurrentImport {
+interface ImportGroupAndCurrentImports {
   importGroups: ImportGroup[];
   currentImports: Import[];
 }
@@ -46,8 +45,7 @@ export function groupImports(imports: Import[]): ImportGroup[] {
 
 function handleLibraries(
   previousAndCurrentImport: PreviousAndCurrentImport,
-  imports: ImportGroupAndCurrentImport
-  // TODO: return PreviousAndCurrentImport and ImportGroupAndCurrentImport
+  imports: ImportGroupAndCurrentImports
 ): { previous: Import; importGroups: ImportGroup[]; currentImports: Import[] } {
   const from = previousAndCurrentImport.current.from;
 
@@ -73,9 +71,8 @@ function handleLibraries(
 
 function handleRelativeImports(
   previousAndCurrentImport: PreviousAndCurrentImport,
-  imports: ImportGroupAndCurrentImport,
+  imports: ImportGroupAndCurrentImports,
   type: Type
-  // TODO: return PreviousAndCurrentImport and ImportGroupAndCurrentImport
 ): { previous: Import; importGroups: ImportGroup[]; currentImports: Import[] } {
   if (previousAndCurrentImport.previous.type !== type) {
     imports.importGroups.push({

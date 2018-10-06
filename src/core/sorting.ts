@@ -1,7 +1,6 @@
 'use strict';
 
-import { validArray, validString } from './validation';
-import { Import, Type } from './models/import';
+import { Import, Type } from '../models/import';
 import {
   determineForwardHierarchyLevel,
   normalizePath,
@@ -11,7 +10,8 @@ import {
   isLibrary,
   isForwardPath,
   FOLDER_PATH,
-} from './util';
+} from '../utils/import-util';
+import { validArray, validString } from '../utils/validation';
 
 /** used for Array.sort */
 const FIRST_AFTER_SECOND = 1;

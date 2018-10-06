@@ -1,15 +1,12 @@
 'use strict';
 
+import { Type } from '../models/import';
+
 import { validString } from './validation';
-import { Type } from './models/import';
 
 export const FOLDER_PATH = '../';
 
 const PATH_SEPARATOR_REGEX = /\//g;
-
-export function isLastIteration<T>(i: number, anArray: Array<T>): boolean {
-  return i === anArray.length - 1;
-}
 
 export function isLibrary(from: string): boolean {
   if (!validString(from)) {
@@ -19,18 +16,15 @@ export function isLibrary(from: string): boolean {
   return startsWithAT(from) || !isRelativePath(from);
 }
 
-// TODO: maybe there's no need for some functions to be here?
-
-// TODO: is it 'statement' or 'from'?
-export function normalizePath(statement: string): string {
-  if (!validString(statement)) {
-    return statement;
+export function normalizePath(from: string): string {
+  if (!validString(from)) {
+    return from;
   }
 
-  if (isFirstCharacter(statement, '.') && statement.charAt(1) === '/') {
-    return statement.slice(2);
+  if (isFirstCharacter(from, '.') && from.charAt(1) === '/') {
+    return from.slice(2);
   }
-  return statement;
+  return from;
 }
 
 export function isBackwardsPath(from: string): boolean {

@@ -1,4 +1,5 @@
 'use strict';
+
 import { Position } from 'vscode';
 
 import { Import } from './import';
