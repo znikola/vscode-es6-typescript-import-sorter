@@ -16,28 +16,55 @@ interface PreviousElement {
   direction: Directions | null;
 }
 
-let importGroups: ImportGroup[];
-let currentImports: Import[];
+interface PreviousAndCurrentImport {
+  lastElement: PreviousElement;
+  element: Import;
+}
+
+interface ImportGroupAndCurrentImport {
+  importGroups: ImportGroup[];
+  currentImports: Import[];
+}
 
 export function groupImports(imports: Import[]): ImportGroup[] {
-  importGroups = [];
-  currentImports = [];
+  let importGroups: ImportGroup[] = [];
+  let currentImports: Import[] = [];
+
   let lastElement: PreviousElement = { from: '', direction: null };
 
   imports.forEach((element, index) => {
     let from = element.from;
 
     if (isLibrary(from)) {
-      lastElement = handleLibraries(lastElement, element, from);
+      ({ lastElement, importGroups, currentImports } = handleLibraries(
+        { lastElement, element },
+        { importGroups, currentImports },
+        from
+      ));
     } else {
       from = normalizePath(from);
 
       if (isBackwardsPath(from)) {
-        lastElement = handleRelativeImports(lastElement, element, Directions.BACK, from);
+        ({ lastElement, importGroups, currentImports } = handleRelativeImports(
+          { lastElement, element },
+          { importGroups, currentImports },
+          Directions.BACK,
+          from
+        ));
       } else if (isCurrentPath(from)) {
-        lastElement = handleRelativeImports(lastElement, element, Directions.CURRENT, from);
+        ({ lastElement, importGroups, currentImports } = handleRelativeImports(
+          { lastElement, element },
+          { importGroups, currentImports },
+          Directions.CURRENT,
+          from
+        ));
       } else {
-        lastElement = handleRelativeImports(lastElement, element, Directions.FORWARD, from);
+        ({ lastElement, importGroups, currentImports } = handleRelativeImports(
+          { lastElement, element },
+          { importGroups, currentImports },
+          Directions.FORWARD,
+          from
+        ));
       }
     }
 
@@ -49,31 +76,52 @@ export function groupImports(imports: Import[]): ImportGroup[] {
   return importGroups;
 }
 
-function handleLibraries(lastElement: PreviousElement, element: Import, from: string): PreviousElement {
-  if (getRootFrom(lastElement.from) === getRootFrom(from) || lastElement.direction === null) {
-    currentImports.push(element);
+function handleLibraries(
+  previousAndCurrentImport: PreviousAndCurrentImport,
+  imports: ImportGroupAndCurrentImport,
+  from: string
+): { lastElement: PreviousElement; importGroups: ImportGroup[]; currentImports: Import[] } {
+  if (
+    getRootFrom(previousAndCurrentImport.lastElement.from) === getRootFrom(from) ||
+    previousAndCurrentImport.lastElement.direction === null
+  ) {
+    imports.currentImports.push(previousAndCurrentImport.element);
   } else {
-    importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
-    currentImports = [];
-    currentImports.push(element);
+    imports.importGroups.push({
+      imports: imports.currentImports,
+      blankLinePostion: previousAndCurrentImport.element.endPosition,
+    });
+    imports.currentImports = [];
+    imports.currentImports.push(previousAndCurrentImport.element);
   }
-  return { from, direction: Directions.LIBRARY };
+  return {
+    lastElement: { from, direction: Directions.LIBRARY },
+    importGroups: imports.importGroups,
+    currentImports: imports.currentImports,
+  };
 }
 
 function handleRelativeImports(
-  lastElement: PreviousElement,
-  element: Import,
+  previousAndCurrentImport: PreviousAndCurrentImport,
+  imports: ImportGroupAndCurrentImport,
   direction: Directions,
   from: string
-): PreviousElement {
-  if (lastElement.direction !== direction) {
-    importGroups.push({ imports: currentImports, blankLinePostion: element.endPosition });
-    currentImports = [];
-    currentImports.push(element);
+): { lastElement: PreviousElement; importGroups: ImportGroup[]; currentImports: Import[] } {
+  if (previousAndCurrentImport.lastElement.direction !== direction) {
+    imports.importGroups.push({
+      imports: imports.currentImports,
+      blankLinePostion: previousAndCurrentImport.element.endPosition,
+    });
+    imports.currentImports = [];
+    imports.currentImports.push(previousAndCurrentImport.element);
   } else {
-    currentImports.push(element);
+    imports.currentImports.push(previousAndCurrentImport.element);
   }
-  return { from, direction };
+  return {
+    lastElement: { from, direction },
+    importGroups: imports.importGroups,
+    currentImports: imports.currentImports,
+  };
 }
 
 function getRootFrom(from: string): string {
