@@ -2,12 +2,8 @@
 
 import * as vscode from 'vscode';
 
-import { getRange } from './core/file-writer';
-import { groupImports } from './core/group-imports';
-import { parse } from './core/regex';
-import { sort } from './core/sorting';
-import { Import } from './models/import';
-import { ImportGroup } from './models/import-group';
+import { sortImports } from 'import-sorter';
+import { Range } from 'import-sorter/dist/lib/models/position';
 
 const TYPESCRIPT_LANGUAGE = 'typescript';
 const JAVASCRIPT_LANGUAGE = 'javascript';
@@ -19,8 +15,8 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    const { importsToDelete, grouped } = executeActions(editor.document);
-    const { range, text } = getRange(grouped, importsToDelete);
+    const { range: importsRange, text } = executeActions(editor.document);
+    const range = getRange(importsRange);
     editor.edit((editBuilder: vscode.TextEditorEdit) => {
       editBuilder.replace(range, text);
     });
@@ -48,18 +44,22 @@ function isLanguageSupported(language: string): boolean {
   return language === JAVASCRIPT_LANGUAGE || language === TYPESCRIPT_LANGUAGE;
 }
 
-function executeActions(document: vscode.TextDocument): { importsToDelete: Import[]; grouped: ImportGroup[] } {
-  const imports = parse(document);
-  const importsToDelete = [...imports];
-  const sorted = sort(imports);
-  const grouped = groupImports(sorted);
-
-  return { importsToDelete, grouped };
+// TODO: textDocument as an argument?
+function executeActions(textDocument: vscode.TextDocument): { range: Range; text: string } {
+  const content: string = textDocument.getText();
+  const result = sortImports(content);
+  return result;
 }
 
-function provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
-  const { importsToDelete, grouped } = executeActions(document);
-  const { range, text } = getRange(grouped, importsToDelete);
-
+function provideDocumentFormattingEdits(textDocument: vscode.TextDocument): vscode.TextEdit[] {
+  const { range: importsRange, text } = executeActions(textDocument);
+  const range = getRange(importsRange);
   return [vscode.TextEdit.replace(range, text)];
+}
+
+// TODO: error handling for the argument
+function getRange(importsRange: Range): vscode.Range {
+  const startPosition = new vscode.Position(importsRange.start.line, importsRange.start.character);
+  const endPosition = new vscode.Position(importsRange.end.line, importsRange.end.character);
+  return new vscode.Range(startPosition, endPosition);
 }
