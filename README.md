@@ -19,7 +19,7 @@ No known issues.
 ## Future plans
 
 * Read configuration from `eslint.json` and `tslint.json` file
-* Create an `npm` executable library (useful for CI)
+* Create a CLI (useful for CI)
 * Sort the importing modules as part of the import statement itself
 
 ## Release Notes
