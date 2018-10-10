@@ -1,4 +1,9 @@
 # Change Log
 
-## [1.0.0-beta.1]
+## [1.1.0]
+- Fixed a minor bug with sorting and grouping
+- Using VSCode's format on save setting
+- Moved the sorting and grouping algorithm to the [library](https://github.com/znikola/es6-typescript-import-sorter)
+
+## [1.0.0]
 - Initial release

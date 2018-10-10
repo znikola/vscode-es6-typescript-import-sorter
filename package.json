@@ -1,66 +1,70 @@
 {
-    "name": "es6-typescript-import-sorter",
-    "displayName": "ES6 and TypeScript import sorter",
-    "description": "Sort and group ES6 and TypeScript import statements",
-    "version": "1.0.0",
-    "publisher": "nikolazaric",
-    "engines": {
-        "vscode": "^1.20.1"
-    },
-    "license": "SEE LICENCE IN LICENCE.md",
-    "categories": [
-        "Formatters", "Other"
-    ],
-    "keywords": [
-        "imports",
-        "sort imports",
-        "order imports",
-        "group imports",
-        "TypeScript"
-    ],
-    "homepage": "https://github.com/znikola/vscode-es6-typescript-import-sorter/blob/master/README.md",
-    "bugs": {
-        "url": "https://github.com/znikola/vscode-es6-typescript-import-sorter/issues"
-    },
-    "repository": {      
-        "type": "git",
-        "url": "https://github.com/znikola/vscode-es6-typescript-import-sorter.git"
-    },
-    "icon": "images/icon.jpg",
-    "galleryBanner": {
-        "color": "#0079cf",
-        "theme": "dark"
-    },
-    "activationEvents": [
-        "onLanguage:javascript",
-        "onLanguage:typescript",
-        "onCommand:extension.sortImports"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "extension.sortImports",
-                "title": "Sort imports"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.21",
-        "tslint": "^5.8.0",
-        "@types/node": "^8.10.25",
-        "@types/mocha": "^2.2.42",
-        "prettier": "1.14.2"
-    },
-    "dependencies": {
-        "import-sorter": "^1.0.0-alpha.3"
-    }
+  "name": "es6-typescript-import-sorter",
+  "displayName": "ES6 and TypeScript import sorter",
+  "description": "Sort and group ES6 and TypeScript import statements",
+  "version": "1.1.0",
+  "publisher": "nikolazaric",
+  "engines": {
+    "vscode": "^1.20.1"
+  },
+  "license": "SEE LICENCE IN LICENCE.md",
+  "categories": [
+    "Formatters", "Other"
+  ],
+  "keywords": [
+    "imports",
+    "sort imports",
+    "order imports",
+    "group imports",
+    "TypeScript"
+  ],
+  "homepage": "https://github.com/znikola/vscode-es6-typescript-import-sorter/blob/master/README.md",
+  "bugs": {
+    "url": "https://github.com/znikola/vscode-es6-typescript-import-sorter/issues"
+  },
+  "repository": {      
+    "type": "git",
+    "url": "https://github.com/znikola/vscode-es6-typescript-import-sorter.git"
+  },
+  "contributors": [
+    "Nikola Zarić <nikola.zaric.ns@gmail.com> (https://github.com/znikola)",
+    "Louis Pierrestiger <louis.pierrestiger@gmail.com> (https://github.com/LTiger14)"
+  ],
+  "icon": "images/icon.jpg",
+  "galleryBanner": {
+    "color": "#0079cf",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onCommand:extension.sortImports"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.sortImports",
+        "title": "Sort imports"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.21",
+    "tslint": "^5.8.0",
+    "@types/node": "^8.10.25",
+    "@types/mocha": "^2.2.42",
+    "prettier": "1.14.3"
+  },
+  "dependencies": {
+    "import-sorter": "^1.0.0-alpha.3"
+  }
 }

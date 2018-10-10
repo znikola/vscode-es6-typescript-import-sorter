@@ -4,7 +4,11 @@ Easily sort import statements in JavaScript and TypeScript files.
 
 ## Features
 
-Sort import statements by invoking `VSCode`'s [command pallete](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) and searching for `Sort imports` command.
+Sort import statements:
+- by invoking `VSCode`'s [command pallete](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) and searching for `Sort imports` command.
+- on save by enabling VSCode's `Format On Save` setting
+
+For a full list of planned feature, see the library repo: https://github.com/znikola/es6-typescript-import-sorter
 
 ![Example of sorting imports](images/example.gif)
 
@@ -16,7 +20,7 @@ No known issues.
 
 * Read configuration from `eslint.json` and `tslint.json` file
 * Create an `npm` executable library (useful for CI)
-* Support different ways to invoke the extension (i.e. sort imports on save)
+* Sort the importing modules as part of the import statement itself
 
 ## Release Notes
 
