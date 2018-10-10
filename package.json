@@ -59,5 +59,8 @@
         "@types/node": "^8.10.25",
         "@types/mocha": "^2.2.42",
         "prettier": "1.14.2"
+    },
+    "dependencies": {
+        "import-sorter": "^1.0.0-alpha.3"
     }
 }
