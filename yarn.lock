@@ -768,10 +768,10 @@ http-signature@~1.2.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-import-sorter@^1.0.0-alpha.1:
-  version "1.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/import-sorter/-/import-sorter-1.0.0-alpha.2.tgz#1a4d744beb8b37b9ef031d222bb7ab0dd3f13bbb"
-  integrity sha512-tb1uW+vXCHdsUb2bUMIN+ulgyuOFP4WiF4zQrjqcJMjwxh3PfO+AwVqF+S7aFCBCMgkzK88N29U5O+MPq8sojg==
+import-sorter@^1.0.0-alpha.3:
+  version "1.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/import-sorter/-/import-sorter-1.0.0-alpha.3.tgz#ad2cb584e35a465070919d456a580793c23ca4ac"
+  integrity sha512-8uVezZZJPmBws18KJs0XcTvfLwDbbweTh+hP4HaceeOE7tete18EC7AL4HGxgmjvYG3tEagowIV3T8TM6rps1w==
   dependencies:
     chalk "^2.4.1"
     commander "^2.18.0"

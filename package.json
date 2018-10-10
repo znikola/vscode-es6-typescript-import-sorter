@@ -61,6 +61,6 @@
         "prettier": "1.14.2"
     },
     "dependencies": {
-        "import-sorter": "^1.0.0-alpha.2"
+        "import-sorter": "^1.0.0-alpha.3"
     }
 }
