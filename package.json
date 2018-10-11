@@ -2,7 +2,7 @@
   "name": "es6-typescript-import-sorter",
   "displayName": "ES6 and TypeScript import sorter",
   "description": "Sort and group ES6 and TypeScript import statements",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "nikolazaric",
   "engines": {
     "vscode": "^1.20.1"
@@ -65,6 +65,6 @@
     "prettier": "1.14.3"
   },
   "dependencies": {
-    "import-sorter": "^1.0.0-alpha.3"
+    "import-sorter": "^1.0.0-alpha.4"
   }
 }
