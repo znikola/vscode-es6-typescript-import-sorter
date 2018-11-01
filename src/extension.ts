@@ -1,7 +1,6 @@
 'use strict';
 
 import * as vscode from 'vscode';
-
 import { sortImports } from 'import-sorter';
 import { Range } from 'import-sorter/dist/lib/models/position';
 
@@ -9,31 +8,47 @@ const TYPESCRIPT_LANGUAGE = 'typescript';
 const JAVASCRIPT_LANGUAGE = 'javascript';
 
 export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.commands.registerTextEditorCommand('extension.sortImports', (editor: vscode.TextEditor) => {
-    // No open text editor or the file is not supported
-    if (!editor || !isLanguageSupported(editor.document.languageId)) {
-      return;
-    }
+  let settings = vscode.workspace.getConfiguration('es6tssort');
 
-    const { range: importsRange, text } = executeActions(editor.document);
-    const range = getRange(importsRange);
-    editor.edit((editBuilder: vscode.TextEditorEdit) => {
-      editBuilder.replace(range, text);
-    });
+  vscode.commands.registerTextEditorCommand(
+    'extension.sortImports',
+    (editor: vscode.TextEditor) => {
+      // No open text editor or the file is not supported
+      if (!editor || !isLanguageSupported(editor.document.languageId)) {
+        return;
+      }
+
+      const { range: importsRange, text } = executeActions(editor.document);
+      const range = getRange(importsRange);
+      editor.edit((editBuilder: vscode.TextEditorEdit) => {
+        editBuilder.replace(range, text);
+      });
+    },
+    context.subscriptions
+  );
+
+  vscode.workspace.onWillSaveTextDocument(event => {
+    if (settings.get('sortOnSave')) {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor || !isLanguageSupported(event.document.languageId)) {
+        return;
+      }
+
+      const { range: importsRange, text } = executeActions(editor.document);
+      const range = getRange(importsRange);
+      editor.edit((editBuilder: vscode.TextEditorEdit) => {
+        editBuilder.replace(range, text);
+      });
+    }
   });
 
-  const onTypeScriptSaveDisposable = vscode.languages.registerDocumentFormattingEditProvider(
-    { scheme: 'file', language: TYPESCRIPT_LANGUAGE },
-    { provideDocumentFormattingEdits }
+  vscode.workspace.onDidChangeConfiguration(
+    () => {
+      settings = vscode.workspace.getConfiguration('es6tssort');
+    },
+    null,
+    context.subscriptions
   );
-  const onJavaScriptSaveDisposable = vscode.languages.registerDocumentFormattingEditProvider(
-    { scheme: 'file', language: JAVASCRIPT_LANGUAGE },
-    { provideDocumentFormattingEdits }
-  );
-
-  context.subscriptions.push(disposable);
-  context.subscriptions.push(onTypeScriptSaveDisposable);
-  context.subscriptions.push(onJavaScriptSaveDisposable);
 }
 
 export function deactivate() {}
@@ -49,12 +64,6 @@ function executeActions(textDocument: vscode.TextDocument): { range: Range; text
   const content: string = textDocument.getText();
   const result = sortImports(content);
   return result;
-}
-
-function provideDocumentFormattingEdits(textDocument: vscode.TextDocument): vscode.TextEdit[] {
-  const { range: importsRange, text } = executeActions(textDocument);
-  const range = getRange(importsRange);
-  return [vscode.TextEdit.replace(range, text)];
 }
 
 // TODO: error handling for the argument
