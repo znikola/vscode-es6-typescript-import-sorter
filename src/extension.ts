@@ -11,24 +11,20 @@ const JAVASCRIPT_LANGUAGE = 'javascript';
 export function activate(context: vscode.ExtensionContext) {
   let settings = vscode.workspace.getConfiguration('es6tssort');
 
-  vscode.commands.registerTextEditorCommand(
-    'extension.sortImports',
-    (editor: vscode.TextEditor) => {
-      // No open text editor or the file is not supported
-      if (!editor || !isLanguageSupported(editor.document.languageId)) {
-        return;
-      }
+  const disposable = vscode.commands.registerTextEditorCommand('extension.sortImports', (editor: vscode.TextEditor) => {
+    // No open text editor or the file is not supported
+    if (!editor || !isLanguageSupported(editor.document.languageId)) {
+      return;
+    }
 
-      const { range: importsRange, sortedImports } = executeActions(editor.document);
-      const range = getRange(importsRange);
-      editor.edit((editBuilder: vscode.TextEditorEdit) => {
-        editBuilder.replace(range, sortedImports);
-      });
-    },
-    context.subscriptions
-  );
+    const { range: importsRange, sortedImports } = executeActions(editor.document);
+    const range = getRange(importsRange);
+    editor.edit((editBuilder: vscode.TextEditorEdit) => {
+      editBuilder.replace(range, sortedImports);
+    });
+  });
 
-  vscode.workspace.onWillSaveTextDocument(event => {
+  const saveDisposable = vscode.workspace.onWillSaveTextDocument(event => {
     if (settings.get('sortOnSave')) {
       const editor = vscode.window.activeTextEditor;
       if (!editor || !isLanguageSupported(event.document.languageId)) {
@@ -43,13 +39,17 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  vscode.workspace.onDidChangeConfiguration(
+  const onChangeDisposable = vscode.workspace.onDidChangeConfiguration(
     () => {
       settings = vscode.workspace.getConfiguration('es6tssort');
     },
     null,
     context.subscriptions
   );
+
+  context.subscriptions.push(disposable);
+  context.subscriptions.push(saveDisposable);
+  context.subscriptions.push(onChangeDisposable);
 }
 
 export function deactivate() {}

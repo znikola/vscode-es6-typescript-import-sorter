@@ -54,7 +54,7 @@
       "properties": {
         "es6tssort.sortOnSave": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Specify whether to sort the imports on save"
         }
       }
