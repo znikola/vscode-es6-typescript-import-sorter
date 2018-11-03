@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { sortImports } from 'import-sorter';
 import { Range } from 'import-sorter/dist/lib/models/position';
+import { ImportFile } from 'import-sorter/dist/lib/models/import';
 
 const TYPESCRIPT_LANGUAGE = 'typescript';
 const JAVASCRIPT_LANGUAGE = 'javascript';
@@ -18,10 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const { range: importsRange, text } = executeActions(editor.document);
+      const { range: importsRange, sortedImports } = executeActions(editor.document);
       const range = getRange(importsRange);
       editor.edit((editBuilder: vscode.TextEditorEdit) => {
-        editBuilder.replace(range, text);
+        editBuilder.replace(range, sortedImports);
       });
     },
     context.subscriptions
@@ -34,10 +35,10 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const { range: importsRange, text } = executeActions(editor.document);
+      const { range: importsRange, sortedImports } = executeActions(editor.document);
       const range = getRange(importsRange);
       editor.edit((editBuilder: vscode.TextEditorEdit) => {
-        editBuilder.replace(range, text);
+        editBuilder.replace(range, sortedImports);
       });
     }
   });
@@ -60,9 +61,10 @@ function isLanguageSupported(language: string): boolean {
 }
 
 // TODO: textDocument as an argument?
-function executeActions(textDocument: vscode.TextDocument): { range: Range; text: string } {
+function executeActions(textDocument: vscode.TextDocument): ImportFile {
   const content: string = textDocument.getText();
-  const result = sortImports(content);
+  // TODO: library error handling?
+  const result = sortImports({ content });
   return result;
 }
 
