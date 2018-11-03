@@ -47,7 +47,18 @@
         "command": "extension.sortImports",
         "title": "Sort imports"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "es6-typescript-import-sorter",
+      "properties": {
+        "es6tssort.sortOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Specify whether to sort the imports on save"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

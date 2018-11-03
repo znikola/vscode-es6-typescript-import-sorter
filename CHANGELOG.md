@@ -1,6 +1,9 @@
 # Change Log
 
-## [1.1.0]
+## [1.1.2]
+- Adapting code to the newest library API (introduced after the CLI release)
+
+## [1.1.1]
 - Fixed a minor grouping bug when only non-library imports are present
 
 ## [1.1.0]
