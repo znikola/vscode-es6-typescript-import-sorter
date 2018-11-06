@@ -1,7 +1,8 @@
 # Change Log
 
 ## [1.1.2]
-- Adapting code to the newest library API (introduced after the CLI release)
+- CLI released
+- Fixed an issues where the extension was preventing prettier to run
 
 ## [1.1.1]
 - Fixed a minor grouping bug when only non-library imports are present

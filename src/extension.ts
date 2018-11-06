@@ -1,9 +1,10 @@
 'use strict';
 
 import * as vscode from 'vscode';
+
 import { sortImports } from 'import-sorter';
-import { Range } from 'import-sorter/dist/lib/models/position';
 import { ImportFile } from 'import-sorter/dist/lib/models/import';
+import { Range } from 'import-sorter/dist/lib/models/position';
 
 const TYPESCRIPT_LANGUAGE = 'typescript';
 const JAVASCRIPT_LANGUAGE = 'javascript';
